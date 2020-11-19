@@ -15,15 +15,23 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+// import PaperDashboard from "./plugins/paperDashboard";
+
+import { BootstrapVue } from 'bootstrap-vue'
+Vue.use(BootstrapVue)
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import Argon from "./plugins/argon-kit";
 import './registerServiceWorker'
+import store from "./store/index"
 
 Vue.config.productionTip = false;
 Vue.use(Argon);
 new Vue({
+  store,
   router,
   render: h => h(App)
 }).$mount("#app");
