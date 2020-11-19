@@ -112,7 +112,7 @@
             <div class="col-sm-9">
                 <div>
                     <h2 class="display-3">Header with small subtitle </h2>
-                    <p class="lead text-muted">According to the National Oceanic and Atmospheric Administration,
+                    <p class="lead text-muted">According to the National Oceanic and Atmospheric driveristration,
                         Ted, Scambos, NSIDClead scentist, puts the potentially record maximum.</p>
                 </div>
             </div>
