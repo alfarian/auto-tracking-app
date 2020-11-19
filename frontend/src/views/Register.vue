@@ -1,16 +1,20 @@
 <template>
   <div class="vue-tempalte">
-    <section style="background-color: whitesmoke; height: 50px" class="shadow">
+    <div>
       <b-navbar toggleable="lg" class="border">
-        <b-navbar-brand href="#">Welcome to Auto App</b-navbar-brand>
+        <b-navbar-brand href="#">WELCOME TO AUTO APP</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
-          <b-navbar-nav class="ml-auto"> </b-navbar-nav>
+          
+
+          <b-navbar-nav class="ml-auto">
+           
+          </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-    </section>
+    </div>
     <br /><br />
     <br /><br />
 
@@ -20,9 +24,10 @@
         <div class="col-6">
           <b-card class="shadow sm">
             <b-tabs content-class="mt-3" justified>
-              <b-tab title="SIGN IN" active>
+              
+              <b-tab title="REGISTER">
                 <div class="container">
-                  <br />
+                   <br />
                   <div class="row">
                     <div class="col-6">
                       <b-form-group>
@@ -49,33 +54,35 @@
                     <input
                       type="password"
                       v-model="password"
-                      @keyup.enter="validateUseruser"
+                      class="form-control form-control-lg"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input
+                      type="password"
+                      v-model="confirmpassword"
                       class="form-control form-control-lg"
                     />
                   </div>
 
                   <b-button
+                    :disabled="flagdisable"
                     variant="info"
                     type="submit"
-                    @click="validateUseruser"
-                    class="btn btn-dark btn-lg btn-block"
+                    @click="registerUserAdmin"
+                    class="btn btn-warning btn-lg btn-block"
                   >
-                    Sign In
+                    Create Account
                   </b-button>
                   <div class="row">
                     <div class="col-6">
                       <p class="forgot-password text-left mt-2 mb-4">
-                        <router-link to="/register-user"
-                          >Register New User</router-link
-                        >
+                        <router-link to="/login">Already have an account?Sign In</router-link>
                       </p>
                     </div>
                     <div class="col-6">
-                      <p class="forgot-password text-right mt-2 mb-4">
-                        <router-link to="/forgot-password"
-                          >Forgot password ?</router-link
-                        >
-                      </p>
+                      
                     </div>
                   </div>
                 </div>
@@ -95,7 +102,9 @@ export default {
     return {
       email: "",
       password: "",
-      selected: "user",
+      confirmpassword: "",
+      flagdisable: true,
+         selected: "user",
       options: [
         { text: "Passenger", value: "user" },
         { text: "Driver", value: "driver", disabled: true },
@@ -103,22 +112,31 @@ export default {
     };
   },
   methods: {
-    validateUserdriver() {
-      if (this.email == "driver" && this.password == "driver") {
-        this.$store.state.storeUsers.personaType = "driver";
-        this.$router.push("components");
+    pwdValidation() {
+      if (
+        this.confirmpassword != "" &&
+        this.password != "" &&
+        this.confirmpassword == this.password
+      ) {
+        this.flagdisable = false;
       } else {
-        alert("Invalid User !!");
+        this.flagdisable = true;
       }
     },
-    validateUseruser() {
+    registerUserAdmin() {
       if (this.email == "user" && this.password == "user") {
         this.$store.state.storeUsers.personaType = "user";
+        alert(" User Added Successfuly");
+
         this.$router.push("components");
       } else {
         alert("Invalid  User !!");
       }
     },
+    
+  },
+  watch: {
+    confirmpassword: "pwdValidation",
   },
 };
 </script>
