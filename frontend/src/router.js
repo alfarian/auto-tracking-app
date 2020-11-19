@@ -3,12 +3,17 @@ import Router from "vue-router";
 import AppHeader from "./layout/AppHeader";
 import Components from "./views/Components.vue";
 import Login from "../src/views/Login.vue"
-
+import Register from "../src/views/Register.vue"
 Vue.use(Router);
 
 export default new Router({
   linkExactActiveClass: "active",
   routes: [
+    {
+      path: "/register-user",
+      name: "register",
+      component: Register
+    },
     {
       path: "/login",
       name: "login",
