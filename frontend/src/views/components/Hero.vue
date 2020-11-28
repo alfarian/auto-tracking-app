@@ -25,72 +25,180 @@
               "
               >AUTO APP</span
             >
-            <!-- <img src="img/brand/white.png" style="width: 200px;" class="img-fluid"> -->
             <p class="lead text-white mt-4 mb-5">
+              {{ message }}
               Just provide your Destination,We'll reach out to you !
             </p>
-            <div class="btn-wrapper">
+            <div v-show="request">
+              <div class="btn-wrapper">
                 <div class="row">
-                    <div class="col-6">
-                         <base-input alternative v-model="source" placeholder="Regular">
-              </base-input>
-                    </div>
-                    <div class="col-6">
-                        <base-input alternative v-model="destination" placeholder="Regular">
-              </base-input>
-                    </div>
-             
-              
+                  <div class="col-6">
+                    <base-input
+                      alternative
+                      type="text"
+                      v-model="source"
+                      placeholder="Source"
+                    >
+                    </base-input>
+                  </div>
+                  <div class="col-6">
+                    <base-input
+                      type="text"
+                      alternative
+                      v-model="destination"
+                      placeholder="Destination"
+                    >
+                    </base-input>
+                  </div>
                 </div>
-              <base-button
-                tag="a"
-                href="https://www.google.com"
-                class="mb-3 mb-sm-0"
-                type="info"
-                icon="ni ni-single-02"
-              >
-             Request a Taxi
-              </base-button>
-              <base-button
-                tag="a"
-                href="https://www.google.com"
-                class="mb-3 mb-sm-0"
-                type="white"
-                icon="ni ni-circle-08"
-              >
-              Request an Auto
-                
-              </base-button>
+                <div class="row">
+                  <div class="col-6">
+                    <base-input
+                      type="text"
+                      alternative
+                      v-model="username"
+                      placeholder="Name"
+                    >
+                    </base-input>
+                  </div>
+                  <div class="col-6">
+                    <base-input
+                      type="number"
+                      alternative
+                      v-model="mobile"
+                      placeholder="Mobile"
+                    >
+                    </base-input>
+                  </div>
+                </div>
+
+                <b-button
+                  tag="a"
+                  :disabled="flagme"
+                  @click="requestAuto"
+                  class="mb-3 mb-sm-0"
+                  type="info"
+                >
+                  Request an Auto
+                </b-button>
+              </div>
+            </div>
+            <div v-show="submitted">
+              <div class="btn-wrapper">
+                <div id="random_no_container">
+                  <b-card title="Your Driver has been assigned !" v-show="acceptedReq">
+                    <div class="row">
+                      <div class="col-4 border">
+                        Name:  {{ driverDetails[0].driver.name }}
+                      </div>
+                      <div class="col-4 border">
+                        Mobile:
+                        {{ driverDetails[0].driver.mobile }}
+                      </div>
+                      <div class="col-4 border">
+                       Auto: {{ driverDetails[0].driver.autonumber }}
+                      </div>
+                    </div>
+                  </b-card>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div
           class="row align-items-center justify-content-around stars-and-coded"
         >
-          <!-- <div class="col-sm-4">
-                        <span class="text-white alpha-7 ml-3">Star us on</span>
-                        <a href="https://github.com/creativetimofficial/argon-design-system" target="_blank" title="Support us on Github">
-                            <img src="img/brand/github-white-slim.png" style="height: 22px; margin-top: -3px">
-                        </a>
-                    </div>
-                    <div class="col-sm-4 mt-4 mt-sm-0 text-right">
-                        <span class="text-white alpha-7">Coded by</span>
-                        <a href="https://www.creative-tim.com" target="_blank" title="Creative Tim - Premium Bootstrap Themes and Templates">
-                            <img src="img/brand/creativetim-white-slim.png" class="ml-3" style="height: 30px;">
-                        </a>
-                    </div> -->
+          <template> </template>
         </div>
       </div>
     </div>
   </section>
 </template>
 <script>
+import jQuery from "jquery";
+
+// function random_no() {
+//   var ran = Math.random();
+//   if (localStorage.getItem("accepted") == "true") {
+//   }
+//   jQuery("#random_no_container").html(ran);
+// }
+
 export default {
   data() {
     return {
-      source: "Orkkattery",
-      destination:"Vadakara"
+      acceptedReq: false,
+      message: "",
+      flagme: true,
+      source: "",
+      destination: "",
+      username: "",
+      mobile: "",
+      submitted: false,
+      request: true,
+      driverDetails: [
+        {
+          driver: {
+            name: "driver_name",
+            mobile: '9999900000',
+            autonumber: "KL-XX-XXXX",
+          },
+        },
+      ],
     };
+  },
+  mounted() {
+    setInterval(
+      function () {
+        this.fetchHole();
+      }.bind(this),
+      5000
+    );
+  },
+  watch: {
+    source: "notNullVariables",
+    destination: "notNullVariables",
+    username: "notNullVariables",
+    mobile: "notNullVariables",
+    submitted: "checking",
+  },
+  methods: {
+    fetchHole() {
+      if (localStorage.getItem("accepted") == "true") {
+        console.log("i'm timeout");
+        localStorage.clear();
+
+        this.acceptedReq = true;
+      }
+    },
+
+    notNullVariables() {
+      if (
+        this.source.length != 0 &&
+        this.destination.length != 0 &&
+        this.username.length != 0 &&
+        this.mobile.length != 0 &&
+        this.mobile.length == 10
+      ) {
+        this.flagme = false;
+      }
+    },
+    requestAuto() {
+      let data = {
+        source: this.source,
+        destination: this.destination,
+        username: this.username,
+        mobile: this.mobile,
+      };
+      this.$store.state.storeUsers.usersDB.push({ user1: data });
+
+      localStorage.setItem("userS", this.source);
+      localStorage.setItem("userD", this.destination);
+      localStorage.setItem("userName", this.username);
+      localStorage.setItem("mobile", this.mobile);
+      this.request = false;
+      this.submitted = true;
+    },
   },
 };
 </script>

@@ -98,21 +98,34 @@ export default {
       selected: "user",
       options: [
         { text: "Passenger", value: "user" },
-        { text: "Driver", value: "driver", disabled: true },
+        { text: "Driver", value: "driver" },
       ],
     };
   },
   methods: {
-    validateUserdriver() {
-      if (this.email == "driver" && this.password == "driver") {
+    validateUseruser() {
+      if (
+        this.email == "driver" &&
+        this.password == "driver" &&
+        this.selected == "driver"
+      ) {
         this.$store.state.storeUsers.personaType = "driver";
+        this.$router.push("driverpage");
+      } else if (
+        this.email == "user" &&
+        this.password == "user" &&
+        this.selected == "user"
+      ) {
+        this.$store.state.storeUsers.personaType = "user";
         this.$router.push("components");
-      } else {
-        alert("Invalid User !!");
       }
     },
-    validateUseruser() {
-      if (this.email == "user" && this.password == "user") {
+    validateUseruser1() {
+      if (
+        this.email == "user" &&
+        this.password == "user" &&
+        this.selected == "driver"
+      ) {
         this.$store.state.storeUsers.personaType = "user";
         this.$router.push("components");
       } else {
