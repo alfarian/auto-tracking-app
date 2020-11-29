@@ -1,5 +1,8 @@
 <template>
-  <div class="vue-tempalte">
+  <div class="vue-tempalte"  :style="{
+      backgroundImage: `url(${require('@/assets/img/car6.jpg')})`,
+      height:'100vh'
+    }">
     <section style="background-color: whitesmoke; height: 50px" class="shadow">
       <b-navbar toggleable="lg" class="border">
         <b-navbar-brand href="#">Welcome to Auto App</b-navbar-brand>

@@ -1,5 +1,8 @@
 <template>
-  <section class="section-hero section-shaped my-0">
+  <section class="section-hero section-shaped my-0"  :style="{
+      backgroundImage: `url(${require('@/assets/img/car6.jpg')})`,
+      height:'100vh'
+    }">
     <div class="shape shape-style-1 shape-primary">
       <span class="span-150"></span>
       <span class="span-50"></span>
@@ -12,10 +15,10 @@
       <span class="span-50"></span>
       <span class="span-100"></span>
     </div>
-    <div class="container shape-container d-flex align-items-center">
+    <div class=" container shape-container d-flex align-items-center">
       <div class="col px-0">
-        <div class="row justify-content-center align-items-center">
-          <div class="col-lg-7 text-center pt-lg">
+        <div id="grad" class=" card row justify-content-center align-items-center">
+          <div class="col-lg-7 text-center pt-lg" style="margin-top:-50px">
             <span
               class="text-white alpha"
               style="
@@ -77,16 +80,18 @@
                   :disabled="flagme"
                   @click="requestAuto"
                   class="mb-3 mb-sm-0"
-                  type="info"
+                  variant="success"
                 >
                   Request an Auto
                 </b-button>
+                <br/>
               </div>
+               <br/> <br/>
             </div>
             <div v-show="submitted">
               <div class="btn-wrapper">
                 <div id="random_no_container">
-                  <b-card title="Your Driver has been assigned !" v-show="acceptedReq">
+                  <b-card id="cardDriver" title="Your Driver has been assigned !" v-show="acceptedReq">
                     <div class="row">
                       <div class="col-4 border">
                         Name:  {{ driverDetails[0].driver.name }}
@@ -99,9 +104,12 @@
                        Auto: {{ driverDetails[0].driver.autonumber }}
                       </div>
                     </div>
+                    <br/> <br/>
                   </b-card>
                 </div>
+                <br/>
               </div>
+              <br/>
             </div>
           </div>
         </div>
@@ -203,4 +211,14 @@ export default {
 };
 </script>
 <style>
+#grad {
+  background-image: linear-gradient(to bottom right, rgb(192, 76, 76), yellow);
+  border-radius: 75px;
+  width: 45vw;
+  margin-left: 130px;
+}
+#cardDriver{
+  border-radius: 20px;
+}
+
 </style>
