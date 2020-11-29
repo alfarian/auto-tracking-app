@@ -23,7 +23,7 @@
             class="nav-link"
             data-toggle="dropdown"
             role="button"
-            style="color:black"
+            style="color:white"
           >
             <i class="ni ni-ui-04 d-lg-none"></i>
             <span class="nav-link-inner--text">Drivers List</span>
@@ -66,7 +66,7 @@
             role="button"
           >
             <i class="ni ni-collection d-lg-none"></i>
-            <span class="nav-link-inner--text" style="color:black">Links</span>
+            <span class="nav-link-inner--text" style="color:white">Links</span>
           </a>
           <router-link to="/landing" class="dropdown-item">Tracker</router-link>
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
@@ -79,7 +79,7 @@
         </base-dropdown>
       </ul>
       <ul class="navbar-nav align-items-lg-center ml-lg-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a
             class="nav-link nav-link-icon"
             href="https://www.facebook.com/"
@@ -120,7 +120,7 @@
             <i class="fa fa-twitter-square"></i>
             <span class="nav-link-inner--text d-lg-none">Twitter</span>
           </a>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a
             class=" nav-link nav-link-icon"

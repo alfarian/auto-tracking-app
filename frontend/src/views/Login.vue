@@ -1,8 +1,11 @@
 <template>
-  <div class="vue-tempalte"  :style="{
+  <div
+    class="vue-tempalte"
+    :style="{
       backgroundImage: `url(${require('@/assets/img/car6.jpg')})`,
-      height:'100vh'
-    }">
+      height: '100vh',
+    }"
+  >
     <section style="background-color: whitesmoke; height: 50px" class="shadow">
       <b-navbar toggleable="lg" class="border">
         <b-navbar-brand href="#">Welcome to Auto App</b-navbar-brand>
@@ -28,12 +31,12 @@
                   <br />
                   <div class="row">
                     <div class="col-6">
-                      <b-form-group>
+                      <b-form-group >
                         <b-form-radio-group
+                          size="lg"
                           v-model="selected"
                           :options="options"
                           plain
-                          name="plain-inline"
                         ></b-form-radio-group>
                       </b-form-group>
                     </div>
