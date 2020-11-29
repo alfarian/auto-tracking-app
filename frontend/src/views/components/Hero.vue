@@ -1,8 +1,11 @@
 <template>
-  <section class="section-hero section-shaped my-0"  :style="{
+  <section
+    class="section-hero section-shaped my-0"
+    :style="{
       backgroundImage: `url(${require('@/assets/img/car6.jpg')})`,
-      height:'100vh'
-    }">
+      height: '100vh',
+    }"
+  >
     <div class="shape shape-style-1 shape-primary">
       <span class="span-150"></span>
       <span class="span-50"></span>
@@ -15,10 +18,13 @@
       <span class="span-50"></span>
       <span class="span-100"></span>
     </div>
-    <div class=" container shape-container d-flex align-items-center">
+    <div class="container shape-container d-flex align-items-center">
       <div class="col px-0">
-        <div id="grad" class=" card row justify-content-center align-items-center">
-          <div class="col-lg-7 text-center pt-lg" style="margin-top:-50px">
+        <div
+          id="grad"
+          class="card row justify-content-center align-items-center"
+        >
+          <div class="col-lg-7 text-center pt-lg" style="margin-top: -50px">
             <span
               class="text-white alpha"
               style="
@@ -84,32 +90,61 @@
                 >
                   Request an Auto
                 </b-button>
-                <br/>
+                <br />
               </div>
-               <br/> <br/>
+              <br />
+              <br />
             </div>
             <div v-show="submitted">
               <div class="btn-wrapper">
+                <div v-if="this.acceptedReq == false" class="">
+                  <div class="row">
+                    <div class="col-3"></div>
+
+                    <div class="col-6" style="margin-left: 50px">
+                      <div class="row">
+                        <div class="col-6">
+                          <b-spinner variant="info"></b-spinner>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-3"></div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-12">
+                      <b-button variant="warning"
+                       @click="cancelAndNew"
+                        >Cancel and Start a New Ride</b-button
+                      >
+                    </div>
+                  </div>
+                </div>
                 <div id="random_no_container">
-                  <b-card id="cardDriver" title="Your Driver has been assigned !" v-show="acceptedReq">
+                  <b-card
+                    id="cardDriver"
+                    title="Your Driver has been assigned !"
+                    v-show="acceptedReq"
+                  >
                     <div class="row">
                       <div class="col-4 border">
-                        Name:  {{ driverDetails[0].driver.name }}
+                        Name: {{ driverDetails[0].driver.name }}
                       </div>
                       <div class="col-4 border">
                         Mobile:
                         {{ driverDetails[0].driver.mobile }}
                       </div>
                       <div class="col-4 border">
-                       Auto: {{ driverDetails[0].driver.autonumber }}
+                        Auto: {{ driverDetails[0].driver.autonumber }}
                       </div>
                     </div>
-                    <br/> <br/>
+                    <br />
+                    <br />
                   </b-card>
                 </div>
-                <br/>
+                <br />
               </div>
-              <br/>
+              <br />
             </div>
           </div>
         </div>
@@ -124,6 +159,7 @@
 </template>
 <script>
 import jQuery from "jquery";
+import BaseButton from "../../components/BaseButton.vue";
 
 // function random_no() {
 //   var ran = Math.random();
@@ -133,8 +169,19 @@ import jQuery from "jquery";
 // }
 
 export default {
+  components: { BaseButton },
   data() {
     return {
+      variants: [
+        "primary",
+        "secondary",
+        "danger",
+        "warning",
+        "success",
+        "info",
+        "light",
+        "dark",
+      ],
       acceptedReq: false,
       message: "",
       flagme: true,
@@ -148,7 +195,7 @@ export default {
         {
           driver: {
             name: "driver_name",
-            mobile: '9999900000',
+            mobile: "9999900000",
             autonumber: "KL-XX-XXXX",
           },
         },
@@ -160,7 +207,7 @@ export default {
       function () {
         this.fetchHole();
       }.bind(this),
-      5000
+      6000
     );
   },
   watch: {
@@ -168,9 +215,16 @@ export default {
     destination: "notNullVariables",
     username: "notNullVariables",
     mobile: "notNullVariables",
-    submitted: "checking",
   },
   methods: {
+    cancelAndNew(){
+      this.acceptedReq=false;
+      this.submitted=false;
+      this.request=true;
+          window.location.reload()
+
+
+    },
     fetchHole() {
       if (localStorage.getItem("accepted") == "true") {
         console.log("i'm timeout");
@@ -189,6 +243,8 @@ export default {
         this.mobile.length == 10
       ) {
         this.flagme = false;
+      } else {
+        this.flagme = true;
       }
     },
     requestAuto() {
@@ -217,8 +273,7 @@ export default {
   width: 45vw;
   margin-left: 130px;
 }
-#cardDriver{
+#cardDriver {
   border-radius: 20px;
 }
-
 </style>
