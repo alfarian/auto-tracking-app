@@ -1,11 +1,8 @@
 <template>
   <header class="header-global">
-    <base-nav class="navbar-main" transparent type="" effect="light" expand>
-      <router-link slot="brand" class="navbar-brand mr-lg-5" to="/">
-        LOGO HERE
-      </router-link>
+    <base-nav class=" card navbar-main" transparent type="" effect="light" expand>
 
-      <div class="row" slot="content-header" slot-scope="{ closeMenu }">
+      <div class="row shadow" slot="content-header" slot-scope="{ closeMenu }">
         <div class="col-6 collapse-brand">
           <a
             href="https://demos.creative-tim.com/vue-argon-design-system/documentation/"
@@ -26,9 +23,10 @@
             class="nav-link"
             data-toggle="dropdown"
             role="button"
+            style="color:white"
           >
             <i class="ni ni-ui-04 d-lg-none"></i>
-            <span class="nav-link-inner--text">How it works?</span>
+            <span class="nav-link-inner--text">Drivers List</span>
           </a>
           <div class="dropdown-menu-inner">
             <a
@@ -68,7 +66,7 @@
             role="button"
           >
             <i class="ni ni-collection d-lg-none"></i>
-            <span class="nav-link-inner--text">Links</span>
+            <span class="nav-link-inner--text" style="color:white">Links</span>
           </a>
           <router-link to="/landing" class="dropdown-item">Tracker</router-link>
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
@@ -81,7 +79,7 @@
         </base-dropdown>
       </ul>
       <ul class="navbar-nav align-items-lg-center ml-lg-auto">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a
             class="nav-link nav-link-icon"
             href="https://www.facebook.com/"
@@ -89,9 +87,10 @@
             rel="noopener"
             data-toggle="tooltip"
             title="Like us on Facebook"
+            style="color:black"
           >
             <i class="fa fa-facebook-square"></i>
-            <span class="nav-link-inner--text d-lg-none">Facebook</span>
+            <span class="nav-link-inner--text d-lg-none" style="color:black">Facebook</span>
           </a>
         </li>
         <li class="nav-item">
@@ -101,6 +100,7 @@
             target="_blank"
             rel="noopener"
             data-toggle="tooltip"
+            style="color:black"
             title="Follow us on Instagram"
           >
             <i class="fa fa-instagram"></i>
@@ -114,17 +114,19 @@
             target="_blank"
             rel="noopener"
             data-toggle="tooltip"
+            style="color:black"
             title="Follow us on Twitter"
           >
             <i class="fa fa-twitter-square"></i>
             <span class="nav-link-inner--text d-lg-none">Twitter</span>
           </a>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a
-            class="nav-link nav-link-icon"
+            class=" nav-link nav-link-icon"
             href="#/login"
             target="_blank"
+            style="color:red;font-size:35px ;margin:0px"
             rel="noopener"
             data-toggle="tooltip"
             title="Log Out"

@@ -1,5 +1,11 @@
 <template>
-  <div class="vue-tempalte">
+  <div
+    class="vue-tempalte"
+    :style="{
+      backgroundImage: `url(${require('@/assets/img/car6.jpg')})`,
+      height: '100vh',
+    }"
+  >
     <section style="background-color: whitesmoke; height: 50px" class="shadow">
       <b-navbar toggleable="lg" class="border">
         <b-navbar-brand href="#">Welcome to Auto App</b-navbar-brand>
@@ -25,12 +31,12 @@
                   <br />
                   <div class="row">
                     <div class="col-6">
-                      <b-form-group>
+                      <b-form-group >
                         <b-form-radio-group
+                          size="lg"
                           v-model="selected"
                           :options="options"
                           plain
-                          name="plain-inline"
                         ></b-form-radio-group>
                       </b-form-group>
                     </div>
@@ -98,21 +104,34 @@ export default {
       selected: "user",
       options: [
         { text: "Passenger", value: "user" },
-        { text: "Driver", value: "driver", disabled: true },
+        { text: "Driver", value: "driver" },
       ],
     };
   },
   methods: {
-    validateUserdriver() {
-      if (this.email == "driver" && this.password == "driver") {
+    validateUseruser() {
+      if (
+        this.email == "driver" &&
+        this.password == "driver" &&
+        this.selected == "driver"
+      ) {
         this.$store.state.storeUsers.personaType = "driver";
+        this.$router.push("driverpage");
+      } else if (
+        this.email == "user" &&
+        this.password == "user" &&
+        this.selected == "user"
+      ) {
+        this.$store.state.storeUsers.personaType = "user";
         this.$router.push("components");
-      } else {
-        alert("Invalid User !!");
       }
     },
-    validateUseruser() {
-      if (this.email == "user" && this.password == "user") {
+    validateUseruser1() {
+      if (
+        this.email == "user" &&
+        this.password == "user" &&
+        this.selected == "driver"
+      ) {
         this.$store.state.storeUsers.personaType = "user";
         this.$router.push("components");
       } else {
