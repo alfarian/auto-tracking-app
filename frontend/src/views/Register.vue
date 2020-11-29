@@ -269,7 +269,6 @@ export default {
         autonumber: "KL-XX-XXXX",
         password: "driver",
       },
-      image: "@/assets/img/car1.jpg",
     };
   },
   methods: {
