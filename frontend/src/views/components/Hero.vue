@@ -61,6 +61,19 @@
                   </div>
                 </div>
                 <div class="row">
+                  <div class="col-12">
+                    <b-form-group>
+                      <b-form-radio-group
+                        size="lg"
+                        v-model="bookingFor"
+                        :options="bookingForOptions"
+                        plain
+                      ></b-form-radio-group>
+                    </b-form-group>
+                  </div>
+                </div>
+
+                <div v-if="this.bookingFor==1" class="row">
                   <div class="col-6">
                     <base-input
                       type="text"
@@ -113,8 +126,7 @@
                   <br />
                   <div class="row">
                     <div class="col-12">
-                      <b-button variant="warning"
-                       @click="cancelAndNew"
+                      <b-button variant="warning" @click="cancelAndNew"
                         >Cancel and Start a New Ride</b-button
                       >
                     </div>
@@ -172,6 +184,11 @@ export default {
   components: { BaseButton },
   data() {
     return {
+      bookingFor: 0,
+      bookingForOptions: [
+        { text: "Booking For Self", value: 0 },
+        { text: "Booking for Someone", value: 1 },
+      ],
       variants: [
         "primary",
         "secondary",
@@ -217,13 +234,11 @@ export default {
     mobile: "notNullVariables",
   },
   methods: {
-    cancelAndNew(){
-      this.acceptedReq=false;
-      this.submitted=false;
-      this.request=true;
-          window.location.reload()
-
-
+    cancelAndNew() {
+      this.acceptedReq = false;
+      this.submitted = false;
+      this.request = true;
+      window.location.reload();
     },
     fetchHole() {
       if (localStorage.getItem("accepted") == "true") {
