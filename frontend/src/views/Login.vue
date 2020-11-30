@@ -31,7 +31,7 @@
                   <br />
                   <div class="row">
                     <div class="col-6">
-                      <b-form-group >
+                      <b-form-group>
                         <b-form-radio-group
                           size="lg"
                           v-model="selected"
@@ -42,48 +42,45 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <label>Email address</label>
+                    <label>Phone Number</label>
                     <input
-                      type="email"
-                      v-model="email"
+                      type="tel"
+                      v-model="phone"
                       class="form-control form-control-lg"
                     />
                   </div>
-
-                  <div class="form-group">
-                    <label>Password</label>
-                    <input
-                      type="password"
-                      v-model="password"
-                      @keyup.enter="validateUseruser"
-                      class="form-control form-control-lg"
-                    />
-                  </div>
-
                   <b-button
                     variant="info"
                     type="submit"
-                    @click="validateUseruser"
+                    @click="authenticateWithGoogle"
                     class="btn btn-dark btn-lg btn-block"
+                    style="margin-top: 10px"
                   >
-                    Sign In
+                    Send OTP
                   </b-button>
-                  <div class="row">
-                    <div class="col-6">
-                      <p class="forgot-password text-left mt-2 mb-4">
-                        <router-link to="/register-user"
-                          >Register New User</router-link
-                        >
-                      </p>
-                    </div>
-                    <div class="col-6">
-                      <p class="forgot-password text-right mt-2 mb-4">
-                        <router-link to="/forgot-password"
-                          >Forgot password ?</router-link
-                        >
-                      </p>
-                    </div>
+                  <div id="recaptcha-container" style="margin-top: 10px"></div>
+                  <div
+                    class="form-group"
+                    v-if="otpSent"
+                    style="margin-top: 10px"
+                  >
+                    <label>OTP</label>
+                    <input
+                      type="number"
+                      v-model="otp"
+                      class="form-control form-control-lg"
+                    />
                   </div>
+                  <b-button
+                    style="margin-top: 10px"
+                    variant="info"
+                    type="submit"
+                    @click="verify"
+                    class="btn btn-dark btn-lg btn-block"
+                    v-if="otpSent && otp && otp.length > 0"
+                  >
+                    Verify and Login
+                  </b-button>
                 </div>
               </b-tab>
             </b-tabs>
@@ -96,11 +93,15 @@
 </template>
 
 <script>
+import firebase from "firebase";
+import axios from "axios";
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      phone: "8086271010",
+      otp: "",
+      otpSent: false,
+      verificationId: "",
       selected: "user",
       options: [
         { text: "Passenger", value: "user" },
@@ -108,35 +109,88 @@ export default {
       ],
     };
   },
+  mounted() {
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      "recaptcha-container"
+    );
+  },
   methods: {
-    validateUseruser() {
-      if (
-        this.email == "driver" &&
-        this.password == "driver" &&
-        this.selected == "driver"
-      ) {
-        this.$store.state.storeUsers.personaType = "driver";
-        this.$router.push("driverpage");
-      } else if (
-        this.email == "user" &&
-        this.password == "user" &&
-        this.selected == "user"
-      ) {
-        this.$store.state.storeUsers.personaType = "user";
-        this.$router.push("components");
-      }
+    authenticateWithGoogle() {
+      this.phone = this.phone.trim();
+      const phoneNumber = `+91${this.phone}`;
+      const appVerifier = window.recaptchaVerifier;
+      const thisInstance = this;
+      firebase
+        .auth()
+        .signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then(function (confirmationResult) {
+          console.log(confirmationResult);
+          thisInstance.otpSent = true;
+          thisInstance.verificationId = confirmationResult.verificationId;
+        })
+        .catch(function (error2) {
+          console.log("othilla :(", error2);
+          thisInstance.resetCaptcha();
+        });
     },
-    validateUseruser1() {
-      if (
-        this.email == "user" &&
-        this.password == "user" &&
-        this.selected == "driver"
-      ) {
-        this.$store.state.storeUsers.personaType = "user";
-        this.$router.push("components");
-      } else {
-        alert("Invalid  User !!");
-      }
+    verify() {
+      const thisInstance = this;
+      var credential = firebase.auth.PhoneAuthProvider.credential(
+        thisInstance.verificationId,
+        thisInstance.otp
+      );
+      firebase
+        .auth()
+        .signInWithCredential(credential)
+        .then((value) => {
+          console.log(value);
+          this.getUserRegistered();
+        })
+        .catch((error1) => {
+          this.resetCaptcha();
+          alert("Sorry! Signin failed. Please try again.");
+          console.log("veendum moonji", error2);
+        });
+    },
+    resetCaptcha() {
+      this.otpSent = false;
+      this.verificationId = "";
+      this.otp = "";
+      window.recaptchaVerifier.render().then(function (widgetId) {
+        grecaptcha.reset(widgetId);
+      });
+    },
+    getUserRegistered() {
+      const thisInstance = this;
+      axios
+        .get(
+          `https://aye-auto.herokuapp.com/${this.selected === "user" ? "customer" : "driver"}/mobile/${this.phone}/validate`
+        )
+        .then((response) => {
+          console.log(response);
+          thisInstance.$store.state.storeUsers.mobileNumber =
+            thisInstance.phone;
+          thisInstance.$store.state.storeUsers.personaType =
+            thisInstance.selected;
+          if (!response.data.result) {
+            thisInstance.$router.push("register-user");
+            return;
+          } else {
+            if (thisInstance.selected == "driver") {
+              thisInstance.$router.push("driverpage");
+              return;
+            } else if (thisInstance.selected == "user") {
+              thisInstance.$router.push("components");
+              return;
+            }
+          }
+        })
+        .catch((error) => {
+          alert(
+            `Sorry! There was an error fetching user details. Please Refresh and Try again. \n Error Details: ${error.toString()}`
+          );
+          this.resetCaptcha();
+        });
     },
   },
 };
