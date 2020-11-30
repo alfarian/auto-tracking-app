@@ -73,7 +73,7 @@
                   </div>
                 </div>
 
-                <div v-if="this.bookingFor==1" class="row">
+                <div v-if="this.bookingFor == 1" class="row">
                   <div class="col-6">
                     <base-input
                       type="text"
@@ -110,7 +110,7 @@
             </div>
             <div v-show="submitted">
               <div class="btn-wrapper">
-                <div v-if="this.acceptedReq == false" class="">
+                <div v-show="!acceptedReq" class="">
                   <div class="row">
                     <div class="col-3"></div>
 
@@ -139,16 +139,16 @@
                     v-show="acceptedReq"
                   >
                     <div class="row">
-                      <div class="col-4 border">
-                        Name: {{ driverDetails[0].driver.name }}
+                      <div class="col-6 border">
+                        Name: {{ myDriver[0].drivername }}
                       </div>
-                      <div class="col-4 border">
+                      <div class="col-6 border">
                         Mobile:
-                        {{ driverDetails[0].driver.mobile }}
+                        {{ myDriver[0].drivermobile }}
                       </div>
-                      <div class="col-4 border">
+                      <!-- <div class="col-4 border">
                         Auto: {{ driverDetails[0].driver.autonumber }}
-                      </div>
+                      </div> -->
                     </div>
                     <br />
                     <br />
@@ -170,6 +170,7 @@
   </section>
 </template>
 <script>
+import axios from "axios";
 import jQuery from "jquery";
 import BaseButton from "../../components/BaseButton.vue";
 
@@ -184,10 +185,10 @@ export default {
   components: { BaseButton },
   data() {
     return {
-      bookingFor: 0,
+      bookingFor: true,
       bookingForOptions: [
-        { text: "Booking For Self", value: 0 },
-        { text: "Booking for Someone", value: 1 },
+        { text: "Booking For Self", value: false },
+        { text: "Booking for Someone", value: true },
       ],
       variants: [
         "primary",
@@ -207,7 +208,9 @@ export default {
       username: "",
       mobile: "",
       submitted: false,
+      timer: null,
       request: true,
+      myDriver: [{ drivername: "", drivermobile: null }],
       driverDetails: [
         {
           driver: {
@@ -219,14 +222,7 @@ export default {
       ],
     };
   },
-  mounted() {
-    setInterval(
-      function () {
-        this.fetchHole();
-      }.bind(this),
-      6000
-    );
-  },
+  mounted() {},
   watch: {
     source: "notNullVariables",
     destination: "notNullVariables",
@@ -241,42 +237,76 @@ export default {
       window.location.reload();
     },
     fetchHole() {
-      if (localStorage.getItem("accepted") == "true") {
-        console.log("i'm timeout");
-        localStorage.clear();
+      axios
+        .get(
+          `https://aye-auto.herokuapp.com/booking/${this.$store.state.storeUsers.bookingId}`
+        )
+        .then((res) => {
+          console.log("res", res);
+          if (res.data.driver_mobile != null) {
+            this.myDriver=[];
+            this.myDriver.push({
+              drivername: res.data.driver_name,
+              drivermobile: res.data.driver_mobile,
+            });
+            console.log("driver assigned", this.myDriver);
+            this.acceptedReq = true;
+            this.request = false;
+            this.submitted = true;
 
-        this.acceptedReq = true;
-      }
+            clearInterval(this.timer);
+          }
+        })
+        .catch((error) => {
+          console.error("error msg", error);
+        });
+      // }
     },
 
     notNullVariables() {
-      if (
-        this.source.length != 0 &&
-        this.destination.length != 0 &&
-        this.username.length != 0 &&
-        this.mobile.length != 0 &&
-        this.mobile.length == 10
-      ) {
+      if (this.source.length != 0 && this.destination.length != 0) {
         this.flagme = false;
       } else {
         this.flagme = true;
       }
     },
     requestAuto() {
-      let data = {
+      console.log("details", this.$store.state.storeUsers.userDetails);
+      let b_data = {
         source: this.source,
         destination: this.destination,
-        username: this.username,
+        name: this.username,
         mobile: this.mobile,
+        customer_id: this.$store.state.storeUsers.userId,
+        booking_for_someone_else: this.bookingFor,
       };
-      this.$store.state.storeUsers.usersDB.push({ user1: data });
+      axios
+        .post("https://aye-auto.herokuapp.com/booking", b_data)
+        .then((response) => {
+          console.log("succeful booking id is ", response.data);
+          this.$store.state.storeUsers.bookingId = response.data.booking_id;
+          alert("Booking Completed!");
 
-      localStorage.setItem("userS", this.source);
-      localStorage.setItem("userD", this.destination);
-      localStorage.setItem("userName", this.username);
-      localStorage.setItem("mobile", this.mobile);
-      this.request = false;
-      this.submitted = true;
+          this.request = false;
+          this.submitted = true;
+          this.timer = setInterval(
+            function () {
+              this.fetchHole();
+            }.bind(this),
+            6000
+          );
+        })
+        .catch((error) => {
+          alert(`Could not Make the Booking \n ERR: ${error.error.message}`);
+        });
+      // this.$store.state.storeUsers.usersDB.push({ user1: data });
+
+      // localStorage.setItem("userS", this.source);
+      // localStorage.setItem("userD", this.destination);
+      // localStorage.setItem("userName", this.username);
+      // localStorage.setItem("mobile", this.mobile);
+      // this.request = false;
+      // this.submitted = true;
     },
   },
 };

@@ -52,7 +52,7 @@
                   <b-button
                     variant="info"
                     type="submit"
-                    @click="authenticateWithGoogle"
+                    @click="getUserRegistered"
                     class="btn btn-dark btn-lg btn-block"
                     style="margin-top: 10px"
                   >
