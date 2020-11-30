@@ -164,7 +164,9 @@ export default {
       const thisInstance = this;
       axios
         .get(
-          `https://aye-auto.herokuapp.com/${this.selected === "user" ? "customer" : "driver"}/mobile/${this.phone}/validate`
+          `https://aye-auto.herokuapp.com/${
+            this.selected === "user" ? "customer" : "driver"
+          }/mobile/${this.phone}/validate`
         )
         .then((response) => {
           console.log(response);
@@ -177,9 +179,13 @@ export default {
             return;
           } else {
             if (thisInstance.selected == "driver") {
+              this.$store.state.storeUsers.driverId = response.data.details.driver_id;
+              this.$store.state.storeUsers.driverDetails = response.data.details;
               thisInstance.$router.push("driverpage");
               return;
             } else if (thisInstance.selected == "user") {
+              this.$store.state.storeUsers.userId = response.data.details.customer_id;
+              this.$store.state.storeUsers.userDetails = response.data.details;
               thisInstance.$router.push("components");
               return;
             }
