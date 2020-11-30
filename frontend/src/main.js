@@ -27,18 +27,19 @@ import router from "./router";
 import Argon from "./plugins/argon-kit";
 import "./registerServiceWorker";
 import store from "./store/index";
-import firebase from 'firebase';
+import firebase from "firebase";
 
 Vue.config.productionTip = false;
 
 var firebaseConfig = {
-  apiKey: "AIzaSyDjCBMXC1uYcop8Lu1Kskq2SZl2iLV_Gqs",
-  authDomain: "auto-tracking-system-d78b2.firebaseapp.com",
-  databaseURL: "https://auto-tracking-system-d78b2.firebaseio.com",
-  projectId: "auto-tracking-system-d78b2",
-  storageBucket: "auto-tracking-system-d78b2.appspot.com",
-  messagingSenderId: "798310569803",
-  appId: "1:798310569803:web:4d18561762ede28ac53ace",
+  apiKey: "AIzaSyAEhiE2G632tZgdN45Np3oK7MAIAx_5bJ4",
+  authDomain: "auto-tracking-app.firebaseapp.com",
+  databaseURL: "https://auto-tracking-app.firebaseio.com",
+  projectId: "auto-tracking-app",
+  storageBucket: "auto-tracking-app.appspot.com",
+  messagingSenderId: "1032951300875",
+  appId: "1:1032951300875:web:b5c8c25600d2effed9d80e",
+  measurementId: "G-5GX9DK05SF",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
