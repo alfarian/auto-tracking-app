@@ -35,6 +35,7 @@
                           v-model="selected"
                           :options="options"
                           plain
+                          disabled
                           name="plain-inline"
                         ></b-form-radio-group>
                       </b-form-group>
@@ -63,6 +64,7 @@
                         <input
                           type="number"
                           v-model="driver.mobile"
+                          disabled
                           class="form-control form-control-sm"
                         />
                       </div>
@@ -93,23 +95,7 @@
                         <label>Auto Number</label>
                         <input
                           type="text"
-                          v-model="driver.autonumber"
-                          class="form-control form-control-sm"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Password</label>
-                        <input
-                          type="password"
-                          v-model="password"
-                          class="form-control form-control-sm"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input
-                          type="password"
-                          v-model="confirmpassword"
+                          v-model="driver.auto_num"
                           class="form-control form-control-sm"
                         />
                       </div>
@@ -123,16 +109,6 @@
                       >
                         Create Account
                       </b-button>
-                      <div class="row">
-                        <div class="col-6">
-                          <p class="forgot-password text-left mt-2 mb-4">
-                            <router-link to="/login"
-                              >Already have an account?Sign In</router-link
-                            >
-                          </p>
-                        </div>
-                        <div class="col-6"></div>
-                      </div>
                     </div>
                   </div>
                   <!-- user -->
@@ -160,6 +136,7 @@
                           type="number"
                           v-model="user.mobile"
                           class="form-control form-control-sm"
+                          disabled
                         />
                       </div>
                       <div class="row">
@@ -186,23 +163,6 @@
                         </div>
                       </div>
 
-                      <div class="form-group">
-                        <label>Password</label>
-                        <input
-                          type="password"
-                          v-model="password"
-                          class="form-control form-control-sm"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input
-                          type="password"
-                          v-model="confirmpassword"
-                          class="form-control form-control-sm"
-                        />
-                      </div>
-
                       <b-button
                         :disabled="flagdisable"
                         variant="info"
@@ -212,16 +172,6 @@
                       >
                         Create Account
                       </b-button>
-                      <div class="row">
-                        <div class="col-6">
-                          <p class="forgot-password text-left mt-2 mb-4">
-                            <router-link to="/login"
-                              >Already have an account?Sign In</router-link
-                            >
-                          </p>
-                        </div>
-                        <div class="col-6"></div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -236,13 +186,11 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      confirmpassword: "",
-      flagdisable: true,
+      flagdisable: false,
       selected: "user",
       options: [
         { text: "Passenger", value: "user" },
@@ -254,54 +202,57 @@ export default {
       ],
       user: {
         name: "user",
-        email: "",
-        age: 23,
-        mobile: 99999,
+        email: "user@gmail.com",
+        age: 18,
+        mobile: 0,
         gender: 0,
-        password: "user",
       },
       driver: {
         name: "driver",
-        email: "",
-        age: 23,
-        mobile: 1111,
-        gender: 1,
-        autonumber: "KL-XX-XXXX",
-        password: "driver",
+        email: "driver@gmail.com",
+        age: 18,
+        mobile: 0,
+        gender: 0,
+        auto_num: "KL-XX-XXXX",
       },
     };
   },
+  mounted() {
+    this.selected = this.$store.state.storeUsers.personaType;
+    if (this.selected === "user") {
+      this.user.mobile = this.$store.state.storeUsers.mobileNumber;
+    } else {
+      this.driver.mobile = this.$store.state.storeUsers.mobileNumber;
+    }
+  },
   methods: {
-    pwdValidation() {
-      if (
-        this.confirmpassword != "" &&
-        this.password != "" &&
-        this.confirmpassword == this.password
-      ) {
-        this.flagdisable = false;
-      } else {
-        this.flagdisable = true;
-      }
-    },
     registerUser() {
-      if (this.user.name == "user" && this.user.password == "user") {
-        this.$store.state.storeUsers.personaType = "user";
-        alert(" User Added Successfuly");
-
-        this.$router.push("components");
-      } else {
-        alert("Invalid  User !!");
-      }
+      axios
+        .post("https://aye-auto.herokuapp.com/customer", this.user)
+        .then((response) => {
+          console.log(response.data);
+          alert("User Added Successfuly");
+          this.$store.state.storeUsers.personaType = "user";
+          this.$store.state.storeUsers.userId = response.data.customer_id;
+          this.$router.push("components");
+        })
+        .catch((error) => {
+          alert(`Could not Register User. \n ERR: ${error.error.message}`);
+        });
     },
     registerDriver() {
-      if (this.driver.name == "driver" && this.driver.password == "driver") {
-        this.$store.state.storeUsers.personaType = "driver";
-        alert(" Driver Added Successfuly");
-
-        this.$router.push("driverpage");
-      } else {
-        alert("Invalid  User !!");
-      }
+      axios
+        .post("https://aye-auto.herokuapp.com/driver", this.driver)
+        .then((response) => {
+          console.log(response.data);
+          alert("Driver Added Successfuly");
+          this.$store.state.storeUsers.personaType = "driver";
+          this.$store.state.storeUsers.driverId = response.data.driver_id;
+          this.$router.push("driverpage");
+        })
+        .catch((error) => {
+          alert(`Could not Register Driver. \n ERR: ${error.error.message}`);
+        });
     },
     driverOption() {
       if (this.selected == "driver") {
@@ -309,10 +260,5 @@ export default {
       }
     },
   },
-  watch: {
-    confirmpassword: "pwdValidation",
-    // selected:"driverOption"
-  },
 };
 </script>
-
