@@ -185,7 +185,7 @@ export default {
   components: { BaseButton },
   data() {
     return {
-      bookingFor: true,
+      bookingFor: false,
       bookingForOptions: [
         { text: "Booking For Self", value: false },
         { text: "Booking for Someone", value: true },
@@ -214,9 +214,9 @@ export default {
       driverDetails: [
         {
           driver: {
-            name: "driver_name",
-            mobile: "9999900000",
-            autonumber: "KL-XX-XXXX",
+            name: "",
+            mobile: "",
+            autonumber: "",
           },
         },
       ],
@@ -234,7 +234,7 @@ export default {
       this.acceptedReq = false;
       this.submitted = false;
       this.request = true;
-      window.location.reload();
+      // window.location.reload();
     },
     fetchHole() {
       axios
@@ -244,7 +244,7 @@ export default {
         .then((res) => {
           console.log("res", res);
           if (res.data.driver_mobile != null) {
-            this.myDriver=[];
+            this.myDriver = [];
             this.myDriver.push({
               drivername: res.data.driver_name,
               drivermobile: res.data.driver_mobile,
@@ -272,14 +272,24 @@ export default {
     },
     requestAuto() {
       console.log("details", this.$store.state.storeUsers.userDetails);
-      let b_data = {
-        source: this.source,
-        destination: this.destination,
-        name: this.username,
-        mobile: this.mobile,
-        customer_id: this.$store.state.storeUsers.userId,
-        booking_for_someone_else: this.bookingFor,
-      };
+      let b_data = {};
+      if (this.bookingFor) {
+        b_data = {
+          source: this.source,
+          destination: this.destination,
+          name: this.username,
+          mobile: this.mobile,
+          customer_id: this.$store.state.storeUsers.userId,
+          booking_for_someone_else: this.bookingFor,
+        };
+      } else {
+        b_data = {
+          source: this.source,
+          destination: this.destination,
+          customer_id: this.$store.state.storeUsers.userId,
+          booking_for_someone_else: this.bookingFor,
+        };
+      }
       axios
         .post("https://aye-auto.herokuapp.com/booking", b_data)
         .then((response) => {

@@ -88,13 +88,39 @@
               <div class="col-4"></div>
             </div>
           </b-card>
-          <b-card v-show="!acceptedReq">
-            <p
-              class="card shadow lead align-items-center mt-4 mb-5"
-              style="text-align: center"
-            >
-              Response sent !!!
-            </p>
+          <b-card v-show="!acceptedReq" style="border:5px solid green;border-radius:30px">
+            <b-card :title="'Passenger '+ acceptedUser.booking_id +' is waiting for you !'" style="border-left: 5px dotted red">
+
+              <!-- <div class="row" style="text-align: center; font-weight: bold">
+                {{acceptedUser.source}} <b>></b> {{acceptedUser.destination}}
+              </div> -->
+              <div class="row">
+                <div class="col-3 border">
+                  Source: {{ acceptedUser.source }}
+                </div>
+                <div class="col-3 border">
+                  Destination
+                  {{ acceptedUser.destination }}
+                </div>
+                <div class="col-3 border">
+                  Name:
+                  {{
+                    acceptedUser.booking_for_someone_else == 0
+                      ? acceptedUser.customer_name
+                      : acceptedUser.name
+                  }}
+                  <br />
+                </div>
+                <div class="col-3 border">
+                  Mobile:
+                  {{
+                    acceptedUser.booking_for_someone_else == 0
+                      ? acceptedUser.customer_mobile
+                      : acceptedUser.mobile
+                  }}
+                </div>
+              </div>
+            </b-card>
           </b-card>
         </b-card>
         <div
@@ -110,11 +136,12 @@
 import axios from "axios";
 export default {
   mounted() {
-    console.log('driverid',this.$store.state.storeUsers.driverId);
+    console.log("driverid", this.$store.state.storeUsers.driverId);
     this.fetchUser();
   },
   data() {
     return {
+      acceptedUser: [],
       allBookings: [],
       passenger: [],
       flagme: true,
@@ -129,9 +156,20 @@ export default {
     mobile: "notNullVariables",
   },
   methods: {
+    fetchacceptedUser(b_id) {
+      axios
+        .get("https://aye-auto.herokuapp.com/booking/" + b_id)
+        .then((response) => {
+          console.log("accepted details", response.data);
+          this.acceptedUser = response.data;
+        })
+        .catch((error) => {
+          alert(`Could not load bookings \n ERR: ${error.error.message}`);
+        });
+    },
     fetchUser() {
       axios
-        .get("https://aye-auto.herokuapp.com/bookings")
+        .get("https://aye-auto.herokuapp.com/bookings/new")
         .then((response) => {
           console.log("all bookings ", response.data);
           this.allBookings = response.data;
@@ -150,17 +188,18 @@ export default {
     },
     accepted(b_id) {
       console.log("id", b_id);
-      let data ={
-        booking_id:b_id,
-        driver_id:this.$store.state.storeUsers.driverId
-      }
+      let data = {
+        booking_id: b_id,
+        driver_id: this.$store.state.storeUsers.driverId,
+      };
       console.log("did", this.$store.state.storeUsers.driverId);
       console.log("data", data);
       axios
-        .post(
-          "https://aye-auto.herokuapp.com/booking/accept",data  )
+        .post("https://aye-auto.herokuapp.com/booking/accept", data)
         .then((res) => {
           console.log("response", res.data);
+          this.fetchacceptedUser(b_id);
+          this.acceptedReq = false;
         })
         .catch((error) => {
           console.log("error", error);
@@ -185,5 +224,19 @@ export default {
 }
 #passenger {
   margin: 20px;
+}
+.acceptedUsercard {
+  border-radius: 15px;
+  border-left-color: 1px dotted red;
+}
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
 }
 </style>

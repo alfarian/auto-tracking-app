@@ -46,13 +46,17 @@
                     <input
                       type="tel"
                       v-model="phone"
+                      placeholder="example: 9876543210"
                       class="form-control form-control-lg"
                     />
                   </div>
+                  <!-- Use ' authenticateWithGoogle 'method for OTP 
+                      Use ' getUserRegistered ' for skipping (*only for already registered users)
+                   -->
                   <b-button
                     variant="info"
                     type="submit"
-                    @click="getUserRegistered"
+                    @click="authenticateWithGoogle"
                     class="btn btn-dark btn-lg btn-block"
                     style="margin-top: 10px"
                   >
@@ -98,7 +102,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      phone: "8086271010",
+      phone: "",
       otp: "",
       otpSent: false,
       verificationId: "",
